@@ -1,0 +1,32 @@
+# ---- MATLAB ----
+*.asv
+slprj/
+*.mex*
+
+# ---- 数据（隐私 / 商业数据库）----
+*.csv
+*.xlsx
+*.xls
+*.sav
+data/
+
+# ---- 论文与参赛材料 ----
+*.pdf
+*.docx
+*.doc
+*承诺书*
+*查重*
+*报名*
+
+# ---- 大图原始格式 ----
+*.fig
+
+# ---- 压缩包 ----
+*.zip
+*.rar
+*.7z
+
+# ---- 系统 ----
+.DS_Store
+Thumbs.db
+desktop.ini
