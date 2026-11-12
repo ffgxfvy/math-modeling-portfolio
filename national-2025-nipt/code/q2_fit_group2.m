@@ -1,5 +1,5 @@
-data = readtable('C:\Users\32073\Desktop\国赛2\问题二拟合\022（29.91-32.895）.xlsx'); 
-filePath = 'C:\Users\32073\Desktop\国赛2\问题二拟合\022（29.91-32.895）.xlsx'; 
+data = readtable('./data/022（29.91-32.895）.xlsx'); 
+filePath = './data/022（29.91-32.895）.xlsx'; 
 
  originalTable = readtable(filePath);
 

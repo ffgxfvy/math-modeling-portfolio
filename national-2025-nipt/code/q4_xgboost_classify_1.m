@@ -3,7 +3,7 @@ clear; clc;
 
 % 从Excel文件导入数据
 % 假设Excel文件名为 'nipt_data.xlsx'，数据在第一个工作表的A列
-filename = 'C:\Users\32073\Desktop\国赛2\问题四\问题四.xlsx';
+filename = './data/问题四.xlsx';
 sheet = 1;
 
 % 使用readtable读取数据（更可靠的方法）

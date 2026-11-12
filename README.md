@@ -1,141 +1,57 @@
 # 数学建模与统计建模作品集
 
-> 四次建模竞赛的作品与代码归档：全国大学生数学建模竞赛 ×2、全国大学生统计建模大赛 ×2。
-> 方法覆盖 **AHP-熵权法、MILP 混合整数规划、GA+PSO、马尔可夫决策过程、分布鲁棒优化、XGBoost、K-means、Kaplan-Meier 生存分析、VAR 时间序列、Transformer-LSTM-XGBoost 混合模型、分位数回归**。
+> 四次国家级数学建模 / 统计建模竞赛的作品、核心求解源码（MATLAB + Python）与结果可视化归档：全国大学生数学建模竞赛 ×2（省二）、全国大学生统计建模大赛 ×2（省一）。
+> 方法覆盖 **MILP 混合整数规划、MDP 马尔可夫决策、GA+PSO 混合优化、分布鲁棒优化（DRO）、AHP-熵权法、BP/LSTM、Kaplan-Meier 生存分析、XGBoost（回归 + SMOTE 异常分类）、VAR / ARIMAX 机制切换、分位数回归概率区间预测**。
+
+[![CI](https://github.com/ffgxfvy/math-modeling-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/ffgxfvy/math-modeling-portfolio/actions/workflows/ci.yml)
+
+---
 
 ## 四次竞赛总览
 
-| 年份 | 竞赛 | 题目 | 核心方法 | 成绩 |
-|---|---|---|---|---|
-| 2024 | 全国大学生数学建模竞赛 | **生产过程中的决策** | 二项分布抽样 · MILP · GA+PSO 混合优化 · MDP · 分布鲁棒优化(DRO) · 蒙特卡洛 | 新疆赛区二等奖 |
-| 2024 | 全国大学生统计建模大赛（第十届） | **新基建浪潮下中国传统基建的破局分析** | AHP-熵权法综合评价 · BP 神经网络 · LSTM 时间序列 | 新疆赛区一等奖 |
-| 2025 | 全国大学生数学建模竞赛 | **NIPT 的时点选择与胎儿的异常判定** | XGBoost 回归/分类 · K-means 聚类 · Kaplan-Meier 生存分析 · 贝叶斯优化 · Bland-Altman · 蒙特卡洛 | 新疆赛区二等奖 |
-| 2025 | 全国大学生统计建模大赛 | **混合能源市场油价预测** | PCA+PCC+MRA 构造指标(ETOPI) · VAR 三阶段集成 · **Transformer-LSTM-XGBoost** · 贝叶斯优化 · 分位数回归区间预测 | 新疆赛区一等奖 |
-
-**方法演进线**：从 2024 年的"统计检验 + 运筹优化"，到 2025 年的"机器学习 + 深度学习 + 不确定性量化"。
+| 年份 | 竞赛 | 题目 | 核心方法 | 成绩 | 目录 |
+|---|---|---|---|---|---|
+| 2024 | 全国大学生数学建模竞赛 | **生产过程中的决策** | 二项抽样 · MILP · MDP · GA+PSO · 分布鲁棒优化(DRO) · 蒙特卡洛 | 新疆赛区二等奖 | [`national-2024-production-decision/`](national-2024-production-decision/README.md) |
+| 2024 | 全国大学生统计建模大赛 | **新基建浪潮下中国传统基建的破局分析** | Voronoi 辐射评估 · AHP-熵权法 · BP 神经网络 · LSTM | 新疆赛区一等奖 | [`statistics-2024-infrastructure/`](statistics-2024-infrastructure/README.md) |
+| 2025 | 全国大学生数学建模竞赛 | **NIPT 的时点选择与胎儿异常判定** | Spearman · K-means · Kaplan-Meier · XGBoost 回归/SMOTE 分类 | 新疆赛区二等奖 | [`national-2025-nipt/`](national-2025-nipt/README.md) |
+| 2025 | 全国大学生统计建模大赛 | **混合能源市场油价预测** | ETOPI 指标（PCA/PCC/MRA）· VAR · ARIMAX 断点 · Transformer-LSTM-XGBoost · 分位数回归 | 新疆赛区一等奖 | [`statistics-2025-oil-price/`](statistics-2025-oil-price/README.md) |
 
 ---
 
-## 1. `national-2024-production-decision` — 生产过程中的决策
+## 代表性亮点与建模思路
 
-**问题**：企业采用"制造—再制造"混合生产模式，需决策各环节是否检测、不合格品报废还是拆解，以最大化利益。
+1. **`national-2025-nipt/` — 数据科学家式的"先失败、再证伪、再升级"**
+   - 问题一先测试线性、多项式与双对数回归均出现欠拟合（$R^2 < 0.1$），遂切换 Spearman 非线性筛查 + **XGBoost + 贝叶斯调参**（测试集 $R^2$ 提升至 `0.794`），并用 **SMOTE + XGBoost 分类**检测胎儿异常（`AUC = 0.952`）。
+   - 子目录现已同时归档 MATLAB（`q1`/`q2`/`q4`）与 Python（`q3_spearman_analysis.py`, `q3_xgboost_y_prediction.py`, `q4_chromosome_aneuploidy_classification.py`）完整代码及 Kaplan-Meier 生存曲线。
 
-| 子问题 | 方法 | 要点 |
-|---|---|---|
-| 问题一 | 二项分布抽样检测 | 正态拟合推导样本量 n 的表达式；在不同信度水平下求**最少抽取量**方案；分析误差 E 对最优样本量的影响（MATLAB 三维曲面图） |
-| 问题二 | **MILP**（混合整数线性规划） | 定义检测/拆解决策变量、目标函数与约束；单纯形法求解（过程中发现 MATLAB 自动改用 GA） |
-| 问题三 | MILP + **MDP** + **GA/PSO 混合** | 扩展到 m 道工序 + n 个零配件；拆解效益部分建马尔可夫决策过程，用贝尔曼方程迭代求回收期望；复杂场景改用 GA+PSO 交替迭代；可视化种群适应度演化 |
-| 问题四 | **分布鲁棒优化(DRO)** + 蒙特卡洛 | 次品率 p 由抽样检测得出而非已知，用蒙特卡洛求最坏情况下的最优 p，再回代问题二、三 |
+2. **`national-2024-production-decision/` — 运筹优化与随机不确定性结合**
+   - 从单次抽样检测、MILP 混合整数规划，推进至 **MDP 贝尔曼拆解期望 + GA/PSO 混合进化**（`moxing3.m`），最终在问题四中引入**分布鲁棒优化（DRO）+ 蒙特卡洛**应对次品率采样不确定性。
 
-> **代码说明**：本次比赛的求解脚本封装在提交用的支撑材料压缩包中，未单独归档。本目录保留题目分析、方法与结论的说明。
-
----
-
-## 2. `statistics-2024-infrastructure` — 新基建浪潮下传统基建的破局分析
-
-**背景**：2023 年底国务院办公厅要求 12 个债务较重的省份除基本民生工程外不得新开工项目；"新基建"（5G、AI、大数据中心）快速发展的同时，传统基建（以高铁为例）面临困局。
-
-| 部分 | 方法 | 要点 |
-|---|---|---|
-| 评价体系 | **AHP-熵权法综合权重** | 从经济效益、辐射面积、社会服务属性、投资建设成本四个维度构建高铁站基建合理性评价指标与标准（主观赋权 + 客观赋权互补） |
-| 预测模型 | **BP 神经网络 + LSTM** | 兼容更多元的影响因素做长期预测，提升模型通用性 |
-| 数据 | 自建数据包 | 22 个高铁站指标因素；北京市客运量、运营里程、常住人口、GDP、人均道路面积、人口密度等 |
-
-> **代码说明**：同 2024 国赛，脚本在参赛数据包中，本目录保留说明。
-
----
-
-## 3. `national-2025-nipt` — NIPT 的时点选择与胎儿的异常判定
-
-**背景**：无创产前检测（NIPT）中，男胎 Y 染色体浓度受孕周与孕妇 BMI 影响；检测时点选错会导致假阴性或错过治疗窗口。数据为 194 例男胎检测记录（含多时间点重复检测）。
-
-### 关键结果
-
-| 问题 | 方法 | 结果 |
-|---|---|---|
-| 问题一 | 皮尔逊相关 → 多项式/双对数回归（**均失败，R² < 0.1**）→ **XGBoost + 网格搜索** | 测试集 **R² = 0.636**；特征重要性显示 BMI 与孕周贡献 > 60% |
-| 问题二 | **K-means** 聚类 + **Kaplan-Meier** 生存分析 + 蒙特卡洛 | BMI 由 4 组优化为 **3 个区间** [26, 29.2) / [29.2, 35.9) / [35.9, 40.1]，对应最佳检测孕周 **13.7 / 15.7 / 16.5 周** |
-| 问题三 | **贝叶斯优化**调参的 XGBoost + 双目标优化 | 测试集 **R² = 0.794**；细分 6 组，最佳孕周 12–17 周；**Bland-Altman 偏差 < 0.6 周** |
-| 问题四 | **XGBoost 二分类** | 测试集 **AUC = 0.952、召回率 0.912**；关键判别指标为 Z 值与读段数 |
-
-> **这份作品最值得讲的地方**：问题一先试了线性/多项式/双对数回归**都失败**（R² < 0.1），才转向树模型。这个"从失败到改进"的过程在面试里比直接甩一个高 R² 更可信。
-
-### 代码
-
-| 文件 | 对应 |
-|---|---|
-| `code/q2_fit_group1.m`、`code/q2_fit_group2.m` | 问题二 BMI 分组与拟合 |
-| `code/q4_xgboost_classify_1.m`、`code/q4_xgboost_classify_2.m` | 问题四 XGBoost 分类（含特征重要性导出，文件名即特征列表） |
-| `feature_importance.png` | 问题三特征重要性 |
-
-**注意**：原始数据涉及医学隐私，**未随仓库公开**。
-
----
-
-## 4. `statistics-2025-oil-price` — 混合能源市场油价预测
-
-**动机**：传统油价预测模型未纳入碳排放政策、可再生能源发展、电动车技术进步等新因素，导致精度受限。
-
-### 三阶段模型体系
-
-```
-   ① 新指标构造                ② 分阶段时序建模              ③ 深度学习混合模型
-┌────────────────────┐   ┌──────────────────────┐   ┌────────────────────────┐
-│ CP  碳价            │   │  三阶段划分：          │   │  Transformer（自注意力）│
-│ RE  可再生能源       │──►│   传统能源主导期        │──►│      +                  │
-│ EV  电动车           │   │   能源转型初期          │   │  LSTM（序列依赖）        │
-│      ↓              │   │   混合能源市场形成期    │   │      +                  │
-│ PCA + PCC + MRA     │   │        ↓              │   │  XGBoost（梯度提升树）   │
-│      ↓              │   │  VAR 时间序列模型      │   │      ↓                  │
-│ ETOPI 能源转型指标   │   │  + 转型预警机制        │   │  贝叶斯优化调超参        │
-└────────────────────┘   │  + 阶段集成预测        │   │      ↓                  │
-                         └──────────────────────┘   │  分位数回归(QR) 概率区间 │
-                                                     └────────────────────────┘
-```
-
-### 方法与实现
-
-| 环节 | 方法 | 脚本 |
-|---|---|---|
-| 指标构造 | PCA + 皮尔逊相关系数 + 多元回归 → ETOPI | `code/carbonprice.m`、`zhengce.m`、`zhixinglidu.m`（碳价/政策强度/执行力度）、`kezaisheng.m`、`fadianliang.m`、`zhuangjironglian.m`、`chengbenxiajiang.m`（可再生能源） |
-| 数据预处理 | 频率调整、季节性调整、平稳性检验、标准化 | 上述各脚本内含 |
-| 阶段模型 | VAR 时间序列 + 三阶段集成 | `code/model2_main.m`、`model2_data.m`、`model2_supplement.m`、`model2_hunong.m`、`model2_template.m` |
-| 深度学习 | **Transformer + LSTM + XGBoost** 混合 + 贝叶斯优化 + 分位数回归 | `code/model3_transformer_lstm_xgb.m`（24 KB，本项目最核心的脚本） |
-
-### 结果图
-
-| 文件 | 内容 |
-|---|---|
-| `qr_interval_forecast.png` | 分位数回归概率区间预测 |
-| `pca_carbon_price.bmp` | 碳价主成分分析 |
-| `pearson.bmp` | 皮尔逊相关性热力图 |
+3. **`statistics-2025-oil-price/` — 宏观政策量化 + 分阶段时序预测 + 客观边界透明**
+   - 将政策强度、碳价与新能源渗透率量化为 `ETOPI` 复合指标；利用 Chow 断点检测（`arimax_regime_ensemble.m`）与三阶段 VAR 对冲结构迁移；分位数回归输出概率预测区间。
+   - 对 `model3_transformer_lstm_xgb.m` 明确标注其外部 `.mat` 配置文件依赖，不包装为“无依赖一键复现”。
 
 ---
 
 ## 目录结构
 
-```
+```text
 math-modeling-portfolio/
-├── README.md
-├── national-2024-production-decision/      # 2024 国赛 B 题
-├── statistics-2024-infrastructure/         # 2024 统计建模
-├── national-2025-nipt/                     # 2025 国赛 C 题
-│   ├── code/
-│   └── feature_importance.png
-└── statistics-2025-oil-price/              # 2025 统计建模
-    ├── code/                               # 12 个 MATLAB 脚本
-    └── *.bmp / *.png
+├── .github/workflows/ci.yml              # 校验 Python 脚本 AST 语法、PNG 可用性与脱敏规则
+├── tests/test_repo_integrity.py          # 仓库结构、无 .bmp 遗留、无本机路径泄露测试
+├── national-2024-production-decision/    # 2024 国赛 B 题：4 份 MATLAB 求解源码 + 9 张结果图 + README
+├── statistics-2024-infrastructure/       # 2024 统计建模：技术路线图 + BP/LSTM 结果图 + README
+├── national-2025-nipt/                   # 2025 国赛 C 题：4 MATLAB + 3 Python 源码 + 5 张结果图 + README
+└── statistics-2025-oil-price/            # 2025 统计建模：14 MATLAB 脚本 + 3 张 Web PNG 图 + README
 ```
 
-## 本仓库不包含
+## 校验命令
 
-- **论文全文**（四次建模的论文正文）：涉及查重风险与版权，未公开；
-- **赛题与题目附件**：组委会版权；
-- **原始数据集**：NIPT 数据涉及医学隐私；其余数据部分来自 RESSET 商业数据库；
-- **参赛材料**：报名表、承诺书、查重报告等含个人信息。
+```bash
+pytest tests -v
+```
 
-如需论文全文或更详细的方法说明，欢迎联系我。
+## 边界说明与个人职责
 
-## 我负责的部分
-
-四次均为**团队参赛**（3 人），我主要负责建模思路设计、模型实现与求解、结果分析与可视化的部分工作，并参与论文撰写。
+- **个人职责**：四次竞赛均为 3 人团队参赛，本人主要承担建模思路拆解、数学规划/机器学习/时序脚本实现、消融可视化与论文撰写工作。
+- **不公开内容**：完整参赛论文正文（查重与版权考量）、NIPT 原始医疗检测表、RESSET 商业原始数据集及含个人身份信息的报名/查重报告文件。

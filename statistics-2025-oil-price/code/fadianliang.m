@@ -7,7 +7,7 @@ close all
 
 try
 ）
-    dataFile = 'C:\Users\32073\Desktop\统计建模2\碳价数据预处理\碳价数据.xlsx';
+    dataFile = './data/碳价数据.xlsx';
     opts = detectImportOptions(dataFile);
     opts.VariableNamesRange = 'A1';  
     data = readtable(dataFile, opts);
@@ -132,5 +132,5 @@ tt.Properties.VariableDescriptions = {
     '基于中位数-MAD的鲁棒标准化'
 };
 
-writetimetable(tt, 'C:\Users\32073\Desktop\统计建模2\碳价数据预处理\processed_carbon_price.xlsx');
+writetimetable(tt, './data/processed_carbon_price.xlsx');
 disp('== 处理完成，结果已保存为 processed_carbon_price.csv ==');

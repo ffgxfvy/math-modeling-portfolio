@@ -1,5 +1,5 @@
 % 读取Excel文件，保留原始列标题
-data = readtable('C:\Users\32073\Desktop\国赛2\问题四\13.xlsx', 'VariableNamingRule', 'preserve');
+data = readtable('./data/13.xlsx', 'VariableNamingRule', 'preserve');
 
 % 显示列名以确认
 disp('列名:');
